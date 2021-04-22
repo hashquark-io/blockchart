@@ -1,15 +1,13 @@
-# LinkedUp - An open professional network.
+# blockchart - An open dfinity token chart  network.
 
-[![Build Status](https://travis-ci.org/dfinity-lab/linkedup.svg?branch=master)](https://travis-ci.org/dfinity-lab/linkedup?branch=master)
+The blockchart sample application provides a simple implementation of an open professional network that demonstrates how to use **inter-canister calls** within a project.
 
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/dfinity-lab/linkedup)
+In the blockchart sample application, there are four canisters:
 
-The LinkedUp sample application provides a simple implementation of an open professional network that demonstrates how to use **inter-canister calls** within a project.
-
-In the LinkedUp sample application, there are two canisters:
-
-* The `linkedup` canister creates and stores basic profile information for a user, including work experience and educational background.
+* The `blockchart` canister creates and stores basic profile information for a user, including work experience token 
 * The `connectd` canister creates and stores a user's connections.
+* The `token` canister  is erc 20 token.
+* The `chart ` canister creates and stores a user's talk.
 
 ## Before you begin
 
@@ -20,12 +18,12 @@ Before building the sample application, verify the following:
 
 ## Demo
 
-1. Clone the `linkedup` repository.
+1. Clone the `blockchart` repository.
 
-2. Change to the local `linkedup` working directory.
+2. Change to the local `blockchart` working directory.
 
     ```bash
-    cd linkedup
+    cd blockchart
     ```
 
 3. Install the required node modules (only needed the first time).
@@ -57,12 +55,16 @@ Before building the sample application, verify the following:
 8. Deploy the application on the local network by running the following command:
 
     ```bash
-    dfx canister install --all
+    dfx canister install connectd
+        dfx canister install chart 
+         eval dfx canister install token --argument '"(\"ieth\",\"ieth\",18,100000,1000)"'
+         eval dfx canister install blockchart --argument '"(principal \"${token_canister_principal}\")"'
+         dfx canister install blockchart_assets 
     ```
 
-9. Copy the canister identifier for the `linkedup_assets` canister (you can use `dfx canister id linkedup_assets`).
+9. Copy the canister identifier for the `blockchart_assets` canister (you can use `dfx canister id blockchart_assets`).
 
-10. Open the `linkedup_assets` canister frontend in your web browser.
+10. Open the `blockchart_assets` canister frontend in your web browser.
 
     For example, if using the default localhost address and port number, the URL looks similar to this:
 
