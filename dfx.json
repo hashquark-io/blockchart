@@ -3,18 +3,27 @@
     "connectd": {
       "main": "src/connectd/main.mo"
     },
+    "chart":{
+      "main": "src/linkedup/chart.mo",
+      "dependencies": [
+        "connectd"
+    ]
+    },
+    "token":{
+      "main": "src/linkedup/token.mo"
+    },
     "linkedup": {
       "main": "src/linkedup/main.mo"
     },
     "linkedup_assets": {
-      "dependencies": ["linkedup"],
+      "dependencies": ["linkedup","chart"],
       "frontend": {
         "entrypoint": "src/linkedup/public/main.js"
       },
       "type": "assets",
       "source": [
-        "src/linkedup/public",
-        "dist/linkedup_assets"
+        "dist/linkedup_assets",
+        "src/linkedup/assets"
       ]
     }
   },
@@ -24,8 +33,10 @@
     }
   },
   "networks": {
-    "tungsten": {
-      "providers": ["https://gw.dfinity.network"],
+    "ic": {
+      "providers": [
+        "https://gw.dfinity.network"
+      ],
       "type": "persistent"
     },
     "local": {
@@ -33,5 +44,5 @@
       "type": "ephemeral"
     }
   },
-  "dfx": "0.6.22"
+  "dfx": "0.6.26"
 }

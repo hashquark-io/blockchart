@@ -1,4 +1,5 @@
 import Principal "mo:base/Principal";
+import Blob "mo:base/Blob";
 
 module {
   public type UserId = Principal;
@@ -23,4 +24,11 @@ module {
     education: Text;
     imgUrl: Text;
   };
+
+
+
+  public type Message={
+    id: UserId;
+    content: Text;
+  }
 };

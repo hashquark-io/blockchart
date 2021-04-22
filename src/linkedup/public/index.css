@@ -5,6 +5,8 @@
 .lu {
     color: #222;
     background: #caccd1;
+    border-radius: 5px;
+    padding: 20px;
 }
 
 .lu_section-header {
@@ -74,7 +76,21 @@
     top: 3em;
     right: 2em;
 }
-
+.lu-chart {
+    margin-right: 0;
+    margin-left: 0;
+    background-color: #fff;
+    border-color: #ddd;
+    border-width: 1px;
+    border-radius: 4px 4px 0 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+    height: 300px;
+    overflow: scroll;
+}
 .lu_profile {
     background: linear-gradient(#fff,#ccc);
     border-radius: 1rem 1rem 0 0;

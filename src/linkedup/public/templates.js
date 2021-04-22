@@ -96,6 +96,21 @@ export const searchResultsPageTmpl = (data) => `
     ${searchResultsTmpl(data)}
   </div>
 `;
+export const leftMessageShow =(data)=>`
+<p class="text-left"><span>${data.id}</span>
+</br>
+${data.content}
+</p>
+`;
+
+export const rightMessageShow =(data)=>`
+<p class="text-right"><span>${data.id}</span>
+</br>
+${data.content}
+</p>
+`;
+
+
 
 const searchResultsTmpl = (data) =>
   data && data.length ? data.map(searchResultTmpl).join("") : "No results";
@@ -107,6 +122,7 @@ const searchResultTmpl = (data, index) => `
       <h4>${data.firstName} ${data.lastName}</h4>
       <p><b>${data.title}</b></p>
       <p>${data.company}</p>
+      <p>${data.id}</p>
     </div>
   </a>
 `;

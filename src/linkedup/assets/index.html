@@ -1,0 +1,123 @@
+<html>
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" /> 
+  <title>LinkedUp | An open professional network.</title> 
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700" rel="stylesheet" type="text/css" /> 
+  <link href="https://fonts.googleapis.com/css?family=Raleway:500" rel="stylesheet" type="text/css" /> 
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400" rel="stylesheet" type="text/css" /> 
+ </head> 
+ <body class="lu container"> 
+  <div class="panel panel-default" style="background-color: #ece7e5;padding: 5px;"> 
+   <div class="panel-body"> 
+    <p>token name: <span id="token_name"></span></p> 
+    <p>acoount id: <span id="own_id"></span></p> 
+    <p>token balance: <span id="token_balance"></span></p> 
+    <p>acount balance: <span id="acount_balance"></span></p> 
+    <p>canister-main cycles: <span id="acount_cycles"></span></p> 
+    <p>canister-token cycles: <span id="canister_cycles"></span></p> 
+   </div> 
+  </div> 
+  <div class="row" style="margin-top:15px;"> 
+   <div class="col-lg-6"> 
+    <div class="input-group"> 
+     <input type="number" id="despoit" class="form-control" placeholder="despoit amount" aria-describedby="basic-addon2" /> 
+     <button type="button" class="btn btn-success" onclick="actions.deposit()">despoit</button> 
+    </div> 
+   </div> 
+  </div> 
+  <div class="row" style="margin-top:15px;"> 
+   <div class="col-lg-9"> 
+    <div class="input-group"> 
+     <input type="number" id="transfor" class="form-control" placeholder="tranfor  amount" aria-describedby="basic-addon2" /> 
+     <input type="text" id="to_account" class="form-control" placeholder="to  account" aria-describedby="basic-addon2" /> 
+     <button type="button" class="btn btn-success" onclick="actions.transfor()">transfor</button> 
+    </div> 
+   </div> 
+  </div> 
+  <div class="row" style="margin-top:15px;"> 
+   <div class="col-lg-9"> 
+    <div class="input-group"> 
+     <input type="text" id="query_account" class="form-control" placeholder="query account" aria-describedby="basic-addon2" /> 
+     <input type="text" id="query_balance" class="form-control" placeholder="show  balance" aria-describedby="basic-addon2" /> 
+     <button type="button" class="btn btn-success" onclick="actions.queryBalance()">query</button> 
+    </div> 
+   </div> 
+  </div>  
+  <div class="panel panel-default" style="background-color: #ece7e5;padding: 5px;;margin-top:10px;"> 
+   <p>请输入你想要交流的账号</p> 
+   <div class="row" style="margin-top:15px;"> 
+    <div class="col-lg-6"> 
+     <div class="input-group"> 
+      <input type="text" id="chart_id" class="form-control" placeholder="account id" aria-describedby="basic-addon2" /> 
+      <button type="button" class="btn btn-success" id="conect_btn" onclick="actions.connect()">connect</button> 
+      <span id="connect_account"></span> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="panel panel-default" id="chart_frame" style="background-color: #ece7e5;padding: 5px;margin-top:10px;"> 
+    <p>聊天历史:</p> 
+    <div id="chart_history" class="lu-chart"> 
+    </div> 
+    <div class="row" style="margin-top:15px;"> 
+     <div class="col-lg-6"> 
+      <div class="input-group"> 
+       <input type="text" id="send_content" class="form-control" placeholder="pls input message content" aria-describedby="basic-addon2" /> 
+       <button type="button" class="btn btn-success" onclick="actions.sendMessage()">发送</button> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+
+
+   <section class="edit">   
+        <div class="container">
+          <div class="row">
+            <div class="col-md-2"></div>
+            <form autocomplete="off" class="col-md-8"  action="" id="edit-form"  role="form">
+              <div class="modal-header">
+                <h4 class="modal-title">create user</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group form-group-lg">
+                  <label for="first-name">First Name</label>
+                  <input class="form-control" id="first-name" name="first-name" placeholder="Enter your first name." type="text">
+                </div>
+                <div class="form-group form-group-lg">
+                  <label for="last-name">Last Name</label>
+                  <input class="form-control" id="last-name" name="last-name" placeholder="Enter your last name." type="text">
+                </div>
+                <div class="form-group form-group-lg">
+                  <label for="title">Job Title</label>
+                  <input class="form-control" id="title" name="title" placeholder="Enter your job title." type="text">
+                </div>
+                <div class="form-group form-group-lg">
+                  <label for="company">Company Name</label>
+                  <input class="form-control" id="company" name="company" placeholder="Enter your company name." type="text">
+                </div>
+                <div class="form-group form-group-lg">
+                  <label for="experience">Work Experience</label>
+                  <textarea class="form-control" id="experience" name="experience" placeholder="Describe your work experience." rows="10" type="text"></textarea>
+                </div>
+                <div class="form-group form-group-lg">
+                  <label for="education">Education Experience</label>
+                  <textarea class="form-control" id="education" name="education" placeholder="Describe your education." rows="10" type="text"></textarea>
+                </div>
+                <div class="form-group form-group-lg">
+                  <label for="imgUrl">Avatar URL</label>
+                  <input class="form-control" id="imgUrl" name="imgUrl" placeholder="Include a URL of your avatar." onChange="actions.tranforImageData()" rows="10" type="file" />
+                </div>
+              </div>
+      
+            </form>
+                    <div class="modal-footer">
+                <button class="btn btn-md btn-custom" onclick="actions.createUser()">Submit</button>
+              </div>
+            <div class="col-md-2"></div>
+          </div>
+        </div>
+      </section>
+      <section class="profile" style="display:none"></section>
+  </div>  
+ </body>
+</html>

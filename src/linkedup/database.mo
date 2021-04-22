@@ -3,16 +3,21 @@ import HashMap "mo:base/HashMap";
 import Iter "mo:base/Iter";
 import Option "mo:base/Option";
 import Principal "mo:base/Principal";
+import Buffer "mo:base/Buffer";
+import List "mo:base/List";
+import Hash "mo:base/Hash";
 import Types "./types";
 
 module {
   type NewProfile = Types.NewProfile;
   type Profile = Types.Profile;
+  type Message =Types.Message;
   type UserId = Types.UserId;
+  type MessageBuffer=Buffer.Buffer<Message>;
 
   public class Directory() {
     // The "database" is just a local hash map
-    let hashMap = HashMap.HashMap<UserId, Profile>(1, isEq, Principal.hash);
+   let  hashMap = HashMap.HashMap<UserId, Profile>(1, isEq, Principal.hash);
 
     public func createOne(userId: UserId, profile: NewProfile) {
       hashMap.put(userId, makeProfile(userId, profile));
@@ -80,5 +85,48 @@ module {
     };
   };
 
-  func isEq(x: UserId, y: UserId): Bool { x == y };
+
+    func makeMessage(userId: UserId, content: Text): Message {
+      {
+        id = userId;
+        content =content;
+      }
+    };
+  public class MessagePool(){
+       var  hashMap = HashMap.HashMap<UserId, MessageBuffer>(1, isEq, Principal.hash);
+
+  public func createOne(useId:UserId,message: Message) {
+          assert(hashMap.size() < 100);
+          switch (hashMap.get(useId)){
+            case (?messages){
+              messages.add(message);
+            };
+            case (null){
+             let queues=Buffer.Buffer<Message>(1);
+             queues.add(message);
+             hashMap.put(useId,queues);
+            };
+          };
+    };
+
+  public func cutomerBtach(userId: UserId,form: UserId ): async [Message]{
+   var messages: MessageBuffer= Buffer.Buffer<Message>(1);
+   var remainBuffer: MessageBuffer =Buffer.Buffer<Message>(1);
+   let queues= Option.get<MessageBuffer>(hashMap.get(userId),Buffer.Buffer<Message>(1));
+          
+    for(message in queues.clone().vals()){
+        if (message.id == form ) {
+              messages.add(message);
+              }else{
+          remainBuffer.add(message);
+              };
+      };
+   let prev= hashMap.replace(userId,remainBuffer);
+      messages.toArray()
+  };
+
+ 
+};
+
+ func isEq(x: UserId, y: UserId): Bool { x == y };
 };

@@ -1,7 +1,7 @@
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const dfxJson = require("./dfx.json");
-
+// var HtmlWebpackPlugin = require('html-webpack-plugin')
 // List of all aliases for canisters. This creates the module alias for
 // the `import ... from "ic:canisters/xyz"` where xyz is the name of a
 // canister.
