@@ -1,5 +1,7 @@
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const dfxJson = require("./dfx.json");
 // var HtmlWebpackPlugin = require('html-webpack-plugin')
 // List of all aliases for canisters. This creates the module alias for
@@ -12,9 +14,8 @@ const aliases = Object.entries(dfxJson.canisters).reduce((acc, [name,]) => {
   const outputRoot = path.join(__dirname, '.dfx', networkName, 'canisters', name);
 
   return {
-    ...acc,
-    ['ic:canisters/' + name]: path.join(outputRoot, name + '.js'),
-    ['ic:idl/' + name]: path.join(outputRoot, name + '.did.js'),
+    ...acc, 
+    ['dfx-generated/' + name]: path.join(outputRoot, name + '.js')
   };
 }, {
 });
@@ -33,19 +34,21 @@ function generateWebpackConfigForCanister(name, info) {
   return {
     mode: "production",
     entry,
-    devtool: "source-map",
+    devtool: "cheap-module-eval-source-map",
     optimization: {
       minimize: true,
       minimizer: [new TerserPlugin()],
-    },
+    },  
     resolve: {
       alias: aliases,
     },
     output: {
-      filename: "index.js",
+      filename: "index.[hash:8].js",
       path: path.join(__dirname, "dist", name),
     },
-    plugins: [],
+    plugins: [    new HtmlWebpackPlugin({  // Also generate a test.html
+      template: 'src/blockchart/assets/index.html'
+    }),   new CleanWebpackPlugin()],
     module: {
       rules: [{
         test: /\.css$/,

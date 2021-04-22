@@ -11,11 +11,6 @@ export const ownProfilePageTmpl = (data) => `
       <div class="col-md-8">
         <h4 class="lu_section-header">Profile</h4>
         ${profileTmpl(data)}
-        <button class="lu_button lu_edit-button" onclick="actions.showEdit()">Edit</button>
-      </div>
-      <div class="col-md-4">
-        <h4 class="lu_section-header">Your Connections</h4>
-        ${connectionsTmpl(data)}
       </div>
     </div>
   </div>

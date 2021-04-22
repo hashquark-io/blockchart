@@ -1,10 +1,40 @@
 import $ from "jquery";
 import  BigNumber from 'bignumber.js';
-import { Principal ,IDL} from '@dfinity/agent';
-// Make the LinkedUp app's public methods available locally
-import linkedup from "ic:canisters/linkedup";
-import linkedupAssest from "ic:canisters/linkedup_assets"
-import chart from "ic:canisters/chart";
+import { Principal ,Actor, HttpAgent} from '@dfinity/agent';
+// Make the blockchart app's public methods available locally
+
+import {
+  idlFactory as blockchart_idl,
+  canisterId as blockchart_id,
+} from "dfx-generated/blockchart";
+
+import {
+  idlFactory as blockchart_assets_idl,
+  canisterId as blockchart_assets_id,
+} from "dfx-generated/blockchart_assets";
+
+import {
+  idlFactory as chart_idl,
+  canisterId as chart_id,
+} from "dfx-generated/chart";
+
+
+const agent = new HttpAgent();
+const blockchart = Actor.createActor(blockchart_idl, {
+  agent,
+  canisterId: blockchart_id,
+});
+
+const blockchartAssest = Actor.createActor(blockchart_assets_idl, {
+  agent,
+  canisterId: blockchart_assets_id,
+});
+
+const chart = Actor.createActor(chart_idl, {
+  agent,
+  canisterId: chart_id,
+});
+
 
 import {
   ownProfilePageTmpl,
@@ -23,12 +53,11 @@ window.$ = window.jQuery = $;
       // Reveal animations.
       // const wow = new WOW();
       // wow.init();
-      linkedupAssest  
-      .retrieve("index.html")
-      .then(injectHtml)
-      .then(() =>{    
+      // blockchartAssest  
+      // .retrieve("index.html")
+      // .then(injectHtml)
+      // .then(() =>{    
         $(document).ready(function () {
-    var start=false;
     var messageList =[];
     var currentMessageList=[];
     var timeId=null;
@@ -56,7 +85,7 @@ window.$ = window.jQuery = $;
           return alert("输入正确金额");
         }
         (async function(){
-          let res=await linkedup.deposit(new BigNumber(value));
+          let res=await blockchart.deposit(value);
           console.log(res)
           clearContent();
           renderMain();
@@ -77,7 +106,7 @@ window.$ = window.jQuery = $;
           return alert("输入账户");  
         }
         (async function(){
-          let res=await linkedup.transfer_from_to(Principal.fromText(to),new BigNumber(value));
+          let res=await blockchart.transfer_from_to(Principal.fromText(to),value);
           console.log(res)
           clearContent();
           renderMain();
@@ -95,9 +124,9 @@ window.$ = window.jQuery = $;
         return alert("输入账户");   
        }
        (async function(){
-        let res=await linkedup.getBalanceOf(Principal.fromText(account));
+        let res=await blockchart.getBalanceOf(Principal.fromText(account));
         console.log(res);
-        query_balance.val(res.toNumber());
+        query_balance.val(Number(res));
       })();
         
       }
@@ -122,11 +151,11 @@ window.$ = window.jQuery = $;
 
       function renderMain(){
         (async function () {
-          Promise.all([linkedup.getName(),
-            linkedup.getOwnId(),
-            linkedup.getBalance(),
-            linkedup.getCyclesBalance(),
-            linkedup.getOuterCycles()
+          Promise.all([blockchart.getName(),
+            blockchart.getOwnId(),
+            blockchart.getBalance(),
+            blockchart.getCyclesBalance(),
+            blockchart.getOuterCycles()
           ]).then(async (data)=>{
             console.log(data);
             const [name,ownId,tokenBalance,acountCycles,canisterCycles] =data;
@@ -134,7 +163,7 @@ window.$ = window.jQuery = $;
            token_balance.text(tokenBalance);
            acount_cycles.text(acountCycles);
            canister_cycles.text(canisterCycles)
-           const acountBalance = await linkedup.getBalanceOf(ownId);
+           const acountBalance = await blockchart.getBalanceOf(ownId);
            acount_balance.text(acountBalance);
            own_id.text(ownId);
            state.profile={
@@ -261,12 +290,13 @@ window.$ = window.jQuery = $;
           try {
             const ownId = await chart.getOwnId();
             const data = await chart.get(ownId);
-            data.connections = [];
+            if(!data) return;
+            data.imgUrl=atob(data.imgUrl)
             $(".profile").html(ownProfilePageTmpl(data)).show();
             // data.connections = await chart.getConnections(ownId);
             // state.connections = data.connections;
             // $(".profile").html(ownProfilePageTmpl(data)).show();
-          } catch (err) {
+          } catch (err) { 
             console.error(err);
           }
         })();
@@ -296,13 +326,13 @@ window.$ = window.jQuery = $;
       }
 
       function renderEdit(userId) {
-        clearAdminSections();
+        clearAdminSections(); 
         $(".edit").show().find("#first-name").focus();
 
         (async function () {
           let result = {};
           if (userId) {
-            result = await linkedup.get(userId);
+            result = await blockchart.get(userId);
           }
           updateForm(result);
         })();
@@ -313,7 +343,7 @@ window.$ = window.jQuery = $;
 
         (async function () {
           try {
-            const results = await linkedup.search(term);
+            const results = await blockchart.search(term);
             state.results = results;
             $(".search").html(searchResultsPageTmpl(results)).show();
           } catch (err) {
@@ -327,10 +357,10 @@ window.$ = window.jQuery = $;
         $(".connections").show();
 
         (async function () {
-          const ownId = linkedup.getOwnId();
+          const ownId = blockchart.getOwnId();
           let connections = userId
-            ? await linkedup.getConnections(userId)
-            : await linkedup.getConnections(ownId);
+            ? await blockchart.getConnections(userId)
+            : await blockchart.getConnections(ownId);
           let message;
           if (connections.length) {
             message = connections.map((profile) => searchResultTmpl(profile));
@@ -347,7 +377,7 @@ window.$ = window.jQuery = $;
       const connectWith = (userId) => {
         try {
           const profile = state.profile;
-          linkedup.connect(profile.id);
+          blockchart.connect(profile.id);
           renderOwnProfile();
         } catch (err) {
           console.error(err);
@@ -361,9 +391,9 @@ window.$ = window.jQuery = $;
         reader.onload=function(e){
           console.log(reader.result)
            
-          imageData=    new TextDecoder().decode(new Uint8Array(reader.result))
+          imageData= btoa(reader.result)
       }
-      reader.readAsArrayBuffer( image[0].files[0])
+      reader.readAsDataURL(image[0].files[0])
 
       }
 
@@ -371,19 +401,19 @@ window.$ = window.jQuery = $;
         // const button = $(this).find('button[type="submit"]');
         // disableSubmitButton(button);
 
-        const firstName = $(this).find("#first-name").val();
-        const lastName = $(this).find("#last-name").val();
-        const title = $(this).find("#title").val();
-        const company = $(this).find("#company").val();
-        const experience = $(this).find("#experience").val();
-        const education = $(this).find("#education").val();
+        const firstName = $("#first-name").val();
+        const lastName = $("#last-name").val();
+        const title = $("#title").val();
+        const company = $("#company").val();
+        const experience = $("#experience").val();
+        const education = $("#education").val();
        console.log("上传");
         async function action() {
           // Call Profile's public methods without an API
           await chart.create({
             firstName,
             lastName,
-            title,
+            title,  
             company,
             experience,
             education,  
@@ -405,6 +435,7 @@ window.$ = window.jQuery = $;
         const searchInputEl = document.getElementById("search");
         renderSearch(searchInputEl.value);
       };
+      renderOwnProfile();
 
       window.actions = {
         connectWith,
@@ -420,6 +451,6 @@ window.$ = window.jQuery = $;
         tranforImageData
       };
     })
-    })
+    // })
   
 

@@ -4,26 +4,25 @@
       "main": "src/connectd/main.mo"
     },
     "chart":{
-      "main": "src/linkedup/chart.mo",
+      "main": "src/blockchart/chart.mo",
       "dependencies": [
         "connectd"
     ]
     },
     "token":{
-      "main": "src/linkedup/token.mo"
+      "main": "src/blockchart/token.mo"
     },
-    "linkedup": {
-      "main": "src/linkedup/main.mo"
+    "blockchart": {
+      "main": "src/blockchart/main.mo"
     },
-    "linkedup_assets": {
-      "dependencies": ["linkedup","chart"],
+    "blockchart_assets": {
+      "dependencies": ["blockchart","chart"],
       "frontend": {
-        "entrypoint": "src/linkedup/public/main.js"
+        "entrypoint": "src/blockchart/public/main.js"
       },
       "type": "assets",
       "source": [
-        "dist/linkedup_assets",
-        "src/linkedup/assets"
+        "dist/blockchart_assets"
       ]
     }
   },
@@ -44,5 +43,5 @@
       "type": "ephemeral"
     }
   },
-  "dfx": "0.6.26"
+  "dfx": "0.7.0-beta.2"
 }
